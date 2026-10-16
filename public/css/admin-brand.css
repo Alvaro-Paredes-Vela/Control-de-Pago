@@ -1,0 +1,57 @@
+/* ===== Logo elegante del sidebar (Reprogramando Sistemas) ===== */
+
+.sidebar-brand,
+.main-sidebar .brand-link {
+    height: 4.4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .08) !important;
+    background: linear-gradient(180deg, rgba(37, 99, 235, .10), transparent);
+}
+
+.sidebar-brand .brand-link,
+.main-sidebar .brand-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+    padding: 0 1rem;
+    text-decoration: none;
+}
+
+/* Imagen: cuadrada, esquinas redondeadas, sin opacidad, con brillo azul */
+.sidebar-brand .brand-image,
+.main-sidebar .brand-image {
+    width: 42px;
+    height: 42px;
+    max-height: none;
+    margin: 0;
+    float: none;
+    object-fit: cover;
+    border-radius: 12px;
+    opacity: 1 !important;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, .45);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.sidebar-brand .brand-link:hover .brand-image,
+.main-sidebar .brand-link:hover .brand-image {
+    transform: scale(1.06) rotate(-3deg);
+    box-shadow: 0 8px 26px rgba(56, 189, 248, .6);
+}
+
+/* Texto con degradado, igual que el login */
+.sidebar-brand .brand-text,
+.main-sidebar .brand-text {
+    font-size: 1.05rem;
+    font-weight: 300;
+    letter-spacing: .06em;
+    white-space: nowrap;
+    background: linear-gradient(90deg, #ffffff 0%, #bae6fd 50%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sidebar-brand .brand-text b,
+.main-sidebar .brand-text b {
+    font-weight: 700;
+}

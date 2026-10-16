@@ -1,0 +1,21 @@
+.nav-sidebar .nav-header {
+    font-size: .7rem;
+    letter-spacing: .12em;
+    opacity: .55;
+    padding-top: 1.2rem;
+}
+
+.nav-sidebar .nav-link {
+    border-radius: .6rem;
+    margin: 2px 8px;
+    transition: all .2s ease;
+}
+
+.nav-sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, .08);
+    transform: translateX(3px);
+}
+
+.nav-sidebar .nav-link.active {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .35);
+}
