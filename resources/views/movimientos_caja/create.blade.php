@@ -5,7 +5,7 @@
 @section('title', 'Nuevo Movimiento de Caja')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}?v=4{{ '' }}">
 @endpush
 
 @section('content_header')

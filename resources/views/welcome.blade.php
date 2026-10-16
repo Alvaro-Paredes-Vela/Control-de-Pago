@@ -5,7 +5,7 @@
 @section('title', 'Dashboard | Centro Interno')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}?v=4{{ '' }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link

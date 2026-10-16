@@ -5,7 +5,7 @@
 @section('title', 'Detalle de inscripción')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}?v=4{{ '' }}">
 
     <style>
         .detail-card {

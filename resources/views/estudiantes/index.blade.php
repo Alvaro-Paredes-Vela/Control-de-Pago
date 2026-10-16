@@ -3,7 +3,7 @@
 @section('title', 'Estudiantes')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}?v=4{{ '' }}">
     <style>
         .student-card {
             border: 0;
