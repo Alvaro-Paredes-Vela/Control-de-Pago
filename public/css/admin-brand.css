@@ -361,25 +361,23 @@
 
 /* ---------- Celulares ---------- */
 
+/* ---------- RESPONSIVE CELULARES ---------- */
+
 @media (max-width: 991.98px) {
 
     .app-sidebar {
-        position: fixed !important;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        height: 100dvh;
         overflow: hidden;
     }
 
     .sidebar-wrapper {
-        height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
     }
 
     .app-main {
-        z-index: 1 !important;
+        position: relative;
+        z-index: 1;
+        min-width: 0;
     }
 }
 
