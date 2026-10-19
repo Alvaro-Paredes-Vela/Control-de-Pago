@@ -400,3 +400,41 @@
         animation: none;
     }
 }
+
+/* Optimización del menú en teléfonos */
+@media (max-width: 991.98px) {
+
+    .app-sidebar {
+        transition: transform 0.2s ease-out !important;
+        will-change: transform;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar-wrapper {
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+
+    .app-sidebar,
+    .app-sidebar * {
+        animation-duration: 0.2s;
+    }
+
+    .app-main {
+        min-width: 0;
+    }
+}
+
+/* Reducir efectos cuando el teléfono lo solicita */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
