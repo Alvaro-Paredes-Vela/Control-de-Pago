@@ -950,6 +950,7 @@ return [
             'icon' => 'bi bi-shield-lock-fill',
             'icon_color' => 'danger',
             'active' => ['usuarios*'],
+            'can' => 'administrar-usuarios',
         ],
 
     ],
