@@ -363,8 +363,8 @@
 
 /* ---------- RESPONSIVE CELULARES ---------- */
 
+/* ---------- MENÚ RESPONSIVE EN CELULARES ---------- */
 @media (max-width: 991.98px) {
-
     .app-sidebar {
         overflow: hidden;
     }
@@ -372,11 +372,11 @@
     .sidebar-wrapper {
         overflow-y: auto;
         overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
     }
 
     .app-main {
         position: relative;
-        z-index: 1;
         min-width: 0;
     }
 }
@@ -401,15 +401,30 @@
     }
 }
 
-/* Optimización del menú en teléfonos */
+/* ---------- OPTIMIZACIÓN DEL MENÚ MÓVIL ---------- */
 @media (max-width: 991.98px) {
 
+    /* Desactivar animaciones pesadas del fondo */
     .app-sidebar {
-        transition: transform 0.2s ease-out !important;
-        will-change: transform;
-        -webkit-overflow-scrolling: touch;
+        overflow: hidden;
+        animation: none !important;
     }
 
+    /* Desactivar la lluvia de meteoros en teléfonos */
+    .app-sidebar::before,
+    .app-sidebar::after {
+        animation: none !important;
+        filter: none !important;
+        opacity: 0;
+    }
+
+    /* Desactivar el brillo animado del contenido */
+    .sidebar-wrapper,
+    .sidebar-brand::after {
+        animation: none !important;
+    }
+
+    /* Mantener el desplazamiento del menú */
     .sidebar-wrapper {
         overflow-y: auto;
         overflow-x: hidden;
@@ -417,23 +432,18 @@
         overscroll-behavior: contain;
     }
 
-    .app-sidebar,
-    .app-sidebar * {
-        animation-duration: 0.2s;
-    }
-
     .app-main {
         min-width: 0;
     }
 }
 
-/* Reducir efectos cuando el teléfono lo solicita */
+/* Respetar la preferencia de reducir movimiento */
 @media (prefers-reduced-motion: reduce) {
 
     *,
     *::before,
     *::after {
-        animation-duration: 0.01ms !important;
+        animation: none !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
