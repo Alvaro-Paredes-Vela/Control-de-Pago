@@ -3,7 +3,8 @@
 @section('title', 'Estudiantes')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}?v=4{{ '' }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}?v=5">
+
     <style>
         .student-card {
             border: 0;
@@ -11,14 +12,39 @@
             box-shadow: 0 3px 12px rgba(0, 0, 0, .06);
         }
 
-        .table td,
-        .table th {
+        .student-card .card-body {
+            padding: 1.25rem;
+        }
+
+        .student-card .table td,
+        .student-card .table th {
             vertical-align: middle;
         }
 
         .action-buttons {
             display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 6px;
+            white-space: nowrap;
+        }
+
+        /* Ocultar los textos de resumen de la paginación */
+        .student-card nav p,
+        .student-card nav .text-sm,
+        .student-card nav .small,
+        .student-card nav div.text-gray-700,
+        .student-card nav div.text-gray-500 {
+            display: none !important;
+        }
+
+        /* Separación de los botones de paginación */
+        .student-card .pagination {
+            margin-bottom: 0;
+        }
+
+        .student-card nav {
+            margin-top: 0;
         }
     </style>
 @endpush
@@ -53,11 +79,13 @@
 
                 <div class="col-md-2">
                     <button class="btn btn-primary w-100" type="submit">
-                        <i class="bi bi-search"></i> Buscar
+                        <i class="bi bi-search"></i>
+                        Buscar
                     </button>
                 </div>
             </form>
 
+            {{-- MENSAJES --}}
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show">
                     {{ session('success') }}
@@ -71,7 +99,7 @@
                 </div>
             @endif
 
-            {{-- TABLA --}}
+            {{-- TABLA DE ESTUDIANTES --}}
             <div class="table-responsive">
                 <table class="table table-hover table-striped">
                     <thead>
@@ -87,22 +115,27 @@
                     </thead>
 
                     <tbody>
-                        @forelse($estudiantes as $estudiante)
+                        @forelse ($estudiantes as $estudiante)
                             <tr>
                                 <td>
                                     {{ $estudiantes->firstItem() + $loop->index }}
                                 </td>
+
                                 <td>
                                     <strong>
                                         {{ $estudiante->registro_universitario }}
                                     </strong>
                                 </td>
+
                                 <td>
                                     {{ $estudiante->nombres }}
                                     {{ $estudiante->apellidos }}
                                 </td>
+
                                 <td>{{ $estudiante->celular ?? '—' }}</td>
+
                                 <td>{{ $estudiante->semestre ?? '—' }}</td>
+
                                 <td>
                                     @if ($estudiante->estado === 'activo')
                                         <span class="badge bg-success">Activo</span>
@@ -110,25 +143,28 @@
                                         <span class="badge bg-secondary">Inactivo</span>
                                     @endif
                                 </td>
+
                                 <td>
-                                    <div class="action-buttons justify-content-center">
+                                    <div class="action-buttons">
                                         <a href="{{ route('estudiantes.show', $estudiante) }}"
-                                            class="btn btn-info btn-sm text-white" title="Ver">
+                                            class="btn btn-info btn-sm text-white" title="Ver estudiante">
                                             <i class="bi bi-eye"></i>
                                         </a>
 
                                         <a href="{{ route('estudiantes.edit', $estudiante) }}"
-                                            class="btn btn-warning btn-sm" title="Editar">
+                                            class="btn btn-warning btn-sm" title="Editar estudiante">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
 
                                         @if ($estudiante->estado === 'activo')
                                             <form action="{{ route('estudiantes.destroy', $estudiante) }}" method="POST"
                                                 onsubmit="return confirm('¿Desactivar este estudiante?')">
+
                                                 @csrf
                                                 @method('DELETE')
 
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Desactivar">
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                    title="Desactivar estudiante">
                                                     <i class="bi bi-person-x"></i>
                                                 </button>
                                             </form>
@@ -148,9 +184,11 @@
                 </table>
             </div>
 
-            <div class="mt-3">
-                {{ $estudiantes->links() }}
+            {{-- SOLO BOTONES DE PAGINACIÓN --}}
+            <div class="d-flex justify-content-end mt-4">
+                {{ $estudiantes->links('pagination::bootstrap-5') }}
             </div>
+
         </div>
     </div>
 @stop

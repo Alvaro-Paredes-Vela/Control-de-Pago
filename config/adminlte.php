@@ -906,6 +906,15 @@ return [
                 ],
             ],
         ],
+
+        [
+            'text' => 'Estado de cuentas',
+            'route' => 'estado-cuentas.index',
+            'icon' => 'bi bi-file-earmark-spreadsheet-fill',
+            'icon_color' => 'warning',
+            'active' => ['estado-cuentas*'],
+        ],
+
         [
             'text' => 'Caja',
             'icon' => 'bi bi-safe2-fill',

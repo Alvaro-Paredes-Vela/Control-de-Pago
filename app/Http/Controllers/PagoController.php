@@ -25,14 +25,15 @@ class PagoController extends Controller
 
     public function index()
     {
-        $this->verificarPermiso();
-
-        $pagos = Pago::with([
+        $pagos = \App\Models\Pago::with([
             'inscripcion.estudiante',
             'inscripcion.actividad',
+            'inscripcion.pagos',
             'metodoPago',
-            'receptor'
-        ])->latest()->paginate(10);
+            'receptor',
+        ])
+            ->latest()
+            ->paginate(10);
 
         return view('pagos.index', compact('pagos'));
     }

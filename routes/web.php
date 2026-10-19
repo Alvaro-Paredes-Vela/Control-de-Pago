@@ -18,6 +18,7 @@ use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\MovimientoCajaController;
 use App\Http\Controllers\CampoActividadController;
+use App\Http\Controllers\EstadoCuentaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,6 +97,9 @@ Route::middleware('auth')->group(function () {
         'actividades/{actividad}/campos/{campo}',
         [CampoActividadController::class, 'destroy']
     )->name('actividades.campos.destroy');
+
+    Route::get('/estado-cuentas', [EstadoCuentaController::class, 'index'])
+        ->name('estado-cuentas.index');
 });
 
 /*
