@@ -21,6 +21,7 @@ use App\Http\Controllers\MovimientoCajaController;
 use App\Http\Controllers\CampoActividadController;
 use App\Http\Controllers\EstadoCuentaController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Permisos del sistema
@@ -40,6 +41,13 @@ Gate::define('administrar-actividades', function ($user) {
 // Administrador y tesorero pueden gestionar caja.
 Gate::define('administrar-caja', function ($user) {
     return in_array($user->rol, ['administrador', 'tesorero']);
+});
+
+// Solo el administrador puede editar o eliminar registros
+// (estudiantes, inscripciones y pagos).
+// Si el tesorero también debe poder, agrégalo al arreglo.
+Gate::define('modificar-registros', function ($user) {
+    return in_array($user->rol, ['administrador']);
 });
 
 /*
@@ -99,6 +107,7 @@ Route::middleware('auth')->group(function () {
     /*
     |--------------------------------------------------------------------------
     | Categorías y actividades: solo administrador
+    | (el organizador solo puede ver el listado y el detalle de actividades)
     |--------------------------------------------------------------------------
     */
 
@@ -107,8 +116,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('categorias', CategoriaActividadController::class)
             ->parameters(['categorias' => 'categoria']);
 
+        // Crear, editar y eliminar actividades.
         Route::resource('actividades', ActividadController::class)
-            ->parameters(['actividades' => 'actividad']);
+            ->parameters(['actividades' => 'actividad'])
+            ->except(['index', 'show']);
 
         // Agregar campos personalizados a una actividad.
         Route::post(
@@ -122,6 +133,11 @@ Route::middleware('auth')->group(function () {
             [CampoActividadController::class, 'destroy']
         )->name('actividades.campos.destroy');
     });
+
+    // Ver actividades: cualquier usuario autenticado.
+    Route::resource('actividades', ActividadController::class)
+        ->parameters(['actividades' => 'actividad'])
+        ->only(['index', 'show']);
 
     /*
     |--------------------------------------------------------------------------
@@ -140,19 +156,41 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Módulos permitidos para los organizadores
+    | Editar y eliminar: solo con el permiso "modificar-registros"
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('can:modificar-registros')->group(function () {
+
+        Route::resource('estudiantes', EstudianteController::class)
+            ->only(['edit', 'update', 'destroy']);
+
+        Route::resource('inscripciones', InscripcionController::class)
+            ->parameters(['inscripciones' => 'inscripcion'])
+            ->only(['edit', 'update', 'destroy']);
+
+        Route::resource('pagos', PagoController::class)
+            ->only(['edit', 'update', 'destroy']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ver y crear: permitido para los organizadores
     |--------------------------------------------------------------------------
     */
 
     // Estudiantes.
-    Route::resource('estudiantes', EstudianteController::class);
+    Route::resource('estudiantes', EstudianteController::class)
+        ->except(['edit', 'update', 'destroy']);
 
     // Inscripciones.
     Route::resource('inscripciones', InscripcionController::class)
-        ->parameters(['inscripciones' => 'inscripcion']);
+        ->parameters(['inscripciones' => 'inscripcion'])
+        ->except(['edit', 'update', 'destroy']);
 
     // Pagos.
-    Route::resource('pagos', PagoController::class);
+    Route::resource('pagos', PagoController::class)
+        ->except(['edit', 'update', 'destroy']);
 
     // Estado de cuentas.
     Route::get(

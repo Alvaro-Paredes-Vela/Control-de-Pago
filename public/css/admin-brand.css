@@ -1,192 +1,193 @@
-/* =====================================================
-   MENÚ LATERAL - ADMINLTE 4
-   Reprogramando Sistemas
-   Lluvia de meteoros SOLO dentro del sidebar
-===================================================== */
+/* MENÚ LATERAL - ADMINLTE 4 · Reprogramando Sistemas */
 
 :root {
     --rs-fondo: #081f40;
     --rs-fondo-oscuro: #04122a;
     --rs-acento: #4cc3ff;
-    --rs-azul: #2f7bff;
 }
 
-
-/* Intensidad de las estrellas (se anima para que titilen) */
+/* Intensidad de las estrellas (titilan) */
 @property --ta {
     syntax: "<number>";
     inherits: false;
-    initial-value: 0.8;
+    initial-value: .8;
 }
 
 @property --tb {
     syntax: "<number>";
     inherits: false;
-    initial-value: 0.8;
+    initial-value: .8;
 }
 
 @property --tc {
     syntax: "<number>";
     inherits: false;
-    initial-value: 0.9;
+    initial-value: .9;
 }
 
 @keyframes rs-ta {
     from {
-        --ta: .15;
+        --ta: .15
     }
 
     50% {
-        --ta: 1;
+        --ta: 1
     }
 
     to {
-        --ta: .35;
+        --ta: .35
     }
 }
 
 @keyframes rs-tb {
     from {
-        --tb: 1;
+        --tb: 1
     }
 
     45% {
-        --tb: .2;
+        --tb: .2
     }
 
     to {
-        --tb: .85;
+        --tb: .85
     }
 }
 
 @keyframes rs-tc {
     from {
-        --tc: .45;
+        --tc: .45
     }
 
     to {
-        --tc: 1;
+        --tc: 1
     }
 }
 
 /* ---------- Base del menú ---------- */
-
 .app-sidebar {
+    --ca: rgb(235 246 255 / var(--ta));
+    --cb: rgb(235 246 255 / var(--tb));
+    --cc: rgb(255 255 255 / var(--tc)) 0, rgb(170 225 255 / calc(var(--tc) * .55)) 38%, #0000 100%;
+    --cd: rgb(220 238 255 / .45);
     z-index: 1050 !important;
     overflow: hidden;
     background-color: var(--rs-fondo) !important;
-    /* resplandor inferior + estrellas + degradado de cielo nocturno */
     background-image:
-        radial-gradient(130% 38% at 50% 108%, rgba(47, 123, 255, .40), transparent 70%),
-        radial-gradient(70% 22% at 15% 32%, rgba(90, 110, 255, .13), transparent 70%),
-        radial-gradient(60% 20% at 90% 62%, rgba(40, 170, 255, .11), transparent 70%),
-        radial-gradient(1.3px 1.3px at 23.2% 9.4%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 42.3% 24.6%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 54.8% 6.8%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 56.2% 93.9%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 62.3% 58.1%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 8.8% 58.4%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 7.7% 22.7%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 42.4% 54.0%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 56.7% 55.9%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 67.1% 11.1%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 56.7% 19.4%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 12.2% 70.8%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 49.7% 53.1%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 76.1% 46.6%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 89.8% 36.4%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 26.4% 18.6%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 76.3% 9.0%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 31.2% 49.5%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 35.3% 45.0%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 60.2% 8.2%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 51.1% 17.2%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 35.2% 92.5%, rgba(235, 246, 255, var(--ta)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 42.6% 95.3%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 77.2% 81.2%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 49.7% 79.1%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 9.5% 10.2%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 28.4% 69.3%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 67.0% 44.7%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 70.4% 87.9%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 36.4% 60.9%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 15.9% 43.2%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 54.7% 70.2%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 95.7% 67.9%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 38.8% 23.6%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 64.9% 2.2%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 81.1% 18.9%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 29.5% 15.3%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 32.9% 13.3%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 83.8% 94.1%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 64.6% 73.5%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 45.9% 86.4%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 92.5% 67.7%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 55.6% 40.0%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(1.3px 1.3px at 95.6% 44.2%, rgba(235, 246, 255, var(--tb)), transparent 100%),
-        radial-gradient(2.2px 2.2px at 13.3% 59.9%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 22.5% 37.9%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 62.6% 94.6%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 59.6% 47.5%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 73.5% 73.6%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 48.0% 68.8%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 74.3% 30.2%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 82.5% 51.8%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 23.9% 54.1%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 60.6% 78.3%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 47.4% 20.0%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(2.2px 2.2px at 59.9% 34.7%, rgba(255, 255, 255, var(--tc)) 0, rgba(170, 225, 255, calc(var(--tc) * .55)) 38%, transparent 100%),
-        radial-gradient(1px 1px at 47.2% 34.1%, rgba(220, 238, 255, 0.43), transparent 100%),
-        radial-gradient(1px 1px at 3.2% 90.1%, rgba(220, 238, 255, 0.39), transparent 100%),
-        radial-gradient(1px 1px at 69.9% 20.5%, rgba(220, 238, 255, 0.56), transparent 100%),
-        radial-gradient(1px 1px at 11.2% 93.7%, rgba(220, 238, 255, 0.51), transparent 100%),
-        radial-gradient(1px 1px at 96.4% 3.7%, rgba(220, 238, 255, 0.47), transparent 100%),
-        radial-gradient(1px 1px at 17.7% 54.7%, rgba(220, 238, 255, 0.29), transparent 100%),
-        radial-gradient(1px 1px at 16.1% 97.7%, rgba(220, 238, 255, 0.34), transparent 100%),
-        radial-gradient(1px 1px at 85.1% 3.7%, rgba(220, 238, 255, 0.35), transparent 100%),
-        radial-gradient(1px 1px at 81.4% 7.0%, rgba(220, 238, 255, 0.52), transparent 100%),
-        radial-gradient(1px 1px at 87.4% 65.9%, rgba(220, 238, 255, 0.54), transparent 100%),
-        radial-gradient(1px 1px at 85.0% 77.1%, rgba(220, 238, 255, 0.47), transparent 100%),
-        radial-gradient(1px 1px at 14.3% 7.1%, rgba(220, 238, 255, 0.5), transparent 100%),
-        radial-gradient(1px 1px at 52.9% 48.3%, rgba(220, 238, 255, 0.53), transparent 100%),
-        radial-gradient(1px 1px at 12.2% 45.3%, rgba(220, 238, 255, 0.29), transparent 100%),
-        radial-gradient(1px 1px at 60.0% 20.5%, rgba(220, 238, 255, 0.37), transparent 100%),
-        radial-gradient(1px 1px at 52.2% 86.8%, rgba(220, 238, 255, 0.58), transparent 100%),
-        radial-gradient(1px 1px at 89.7% 88.5%, rgba(220, 238, 255, 0.34), transparent 100%),
-        radial-gradient(1px 1px at 86.2% 17.0%, rgba(220, 238, 255, 0.49), transparent 100%),
-        radial-gradient(1px 1px at 24.0% 70.2%, rgba(220, 238, 255, 0.6), transparent 100%),
-        radial-gradient(1px 1px at 41.0% 42.3%, rgba(220, 238, 255, 0.39), transparent 100%),
-        radial-gradient(1px 1px at 51.6% 30.0%, rgba(220, 238, 255, 0.59), transparent 100%),
-        radial-gradient(1px 1px at 24.5% 86.9%, rgba(220, 238, 255, 0.31), transparent 100%),
-        radial-gradient(1px 1px at 28.6% 89.8%, rgba(220, 238, 255, 0.34), transparent 100%),
-        radial-gradient(1px 1px at 82.9% 67.2%, rgba(220, 238, 255, 0.58), transparent 100%),
-        radial-gradient(1px 1px at 33.7% 28.3%, rgba(220, 238, 255, 0.54), transparent 100%),
-        radial-gradient(1px 1px at 20.2% 88.7%, rgba(220, 238, 255, 0.37), transparent 100%),
-        radial-gradient(1px 1px at 4.6% 9.7%, rgba(220, 238, 255, 0.36), transparent 100%),
-        radial-gradient(1px 1px at 94.1% 26.7%, rgba(220, 238, 255, 0.34), transparent 100%),
-        radial-gradient(1px 1px at 4.7% 50.6%, rgba(220, 238, 255, 0.59), transparent 100%),
-        radial-gradient(1px 1px at 23.2% 23.5%, rgba(220, 238, 255, 0.34), transparent 100%),
-        radial-gradient(1px 1px at 95.3% 83.0%, rgba(220, 238, 255, 0.28), transparent 100%),
-        radial-gradient(1px 1px at 43.5% 6.4%, rgba(220, 238, 255, 0.49), transparent 100%),
-        radial-gradient(1px 1px at 38.8% 50.6%, rgba(220, 238, 255, 0.59), transparent 100%),
-        radial-gradient(1px 1px at 28.3% 1.4%, rgba(220, 238, 255, 0.4), transparent 100%),
+        radial-gradient(130% 38% at 50% 108%, rgb(47 123 255 / .4), transparent 70%),
+        radial-gradient(70% 22% at 15% 32%, rgb(90 110 255 / .13), transparent 70%),
+        radial-gradient(60% 20% at 90% 62%, rgb(40 170 255 / .11), transparent 70%),
+        /* estrellas A */
+        radial-gradient(circle 1.3px at 23.2% 9.4%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 42.3% 24.6%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 54.8% 6.8%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 56.2% 93.9%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 62.3% 58.1%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 8.8% 58.4%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 7.7% 22.7%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 42.4% 54%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 56.7% 55.9%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 67.1% 11.1%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 56.7% 19.4%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 12.2% 70.8%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 49.7% 53.1%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 76.1% 46.6%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 89.8% 36.4%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 26.4% 18.6%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 76.3% 9%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 31.2% 49.5%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 35.3% 45%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 60.2% 8.2%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 51.1% 17.2%, var(--ca), #0000),
+        radial-gradient(circle 1.3px at 35.2% 92.5%, var(--ca), #0000),
+        /* estrellas B */
+        radial-gradient(circle 1.3px at 42.6% 95.3%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 77.2% 81.2%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 49.7% 79.1%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 9.5% 10.2%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 28.4% 69.3%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 67% 44.7%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 70.4% 87.9%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 36.4% 60.9%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 15.9% 43.2%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 54.7% 70.2%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 95.7% 67.9%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 38.8% 23.6%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 64.9% 2.2%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 81.1% 18.9%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 29.5% 15.3%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 32.9% 13.3%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 83.8% 94.1%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 64.6% 73.5%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 45.9% 86.4%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 92.5% 67.7%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 55.6% 40%, var(--cb), #0000),
+        radial-gradient(circle 1.3px at 95.6% 44.2%, var(--cb), #0000),
+        /* estrellas grandes C */
+        radial-gradient(circle 2.2px at 13.3% 59.9%, var(--cc)),
+        radial-gradient(circle 2.2px at 22.5% 37.9%, var(--cc)),
+        radial-gradient(circle 2.2px at 62.6% 94.6%, var(--cc)),
+        radial-gradient(circle 2.2px at 59.6% 47.5%, var(--cc)),
+        radial-gradient(circle 2.2px at 73.5% 73.6%, var(--cc)),
+        radial-gradient(circle 2.2px at 48% 68.8%, var(--cc)),
+        radial-gradient(circle 2.2px at 74.3% 30.2%, var(--cc)),
+        radial-gradient(circle 2.2px at 82.5% 51.8%, var(--cc)),
+        radial-gradient(circle 2.2px at 23.9% 54.1%, var(--cc)),
+        radial-gradient(circle 2.2px at 60.6% 78.3%, var(--cc)),
+        radial-gradient(circle 2.2px at 47.4% 20%, var(--cc)),
+        radial-gradient(circle 2.2px at 59.9% 34.7%, var(--cc)),
+        /* estrellas tenues fijas */
+        radial-gradient(circle 1px at 47.2% 34.1%, var(--cd), #0000),
+        radial-gradient(circle 1px at 3.2% 90.1%, var(--cd), #0000),
+        radial-gradient(circle 1px at 69.9% 20.5%, var(--cd), #0000),
+        radial-gradient(circle 1px at 11.2% 93.7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 96.4% 3.7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 17.7% 54.7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 16.1% 97.7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 85.1% 3.7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 81.4% 7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 87.4% 65.9%, var(--cd), #0000),
+        radial-gradient(circle 1px at 85% 77.1%, var(--cd), #0000),
+        radial-gradient(circle 1px at 14.3% 7.1%, var(--cd), #0000),
+        radial-gradient(circle 1px at 52.9% 48.3%, var(--cd), #0000),
+        radial-gradient(circle 1px at 12.2% 45.3%, var(--cd), #0000),
+        radial-gradient(circle 1px at 60% 20.5%, var(--cd), #0000),
+        radial-gradient(circle 1px at 52.2% 86.8%, var(--cd), #0000),
+        radial-gradient(circle 1px at 89.7% 88.5%, var(--cd), #0000),
+        radial-gradient(circle 1px at 86.2% 17%, var(--cd), #0000),
+        radial-gradient(circle 1px at 24% 70.2%, var(--cd), #0000),
+        radial-gradient(circle 1px at 41% 42.3%, var(--cd), #0000),
+        radial-gradient(circle 1px at 51.6% 30%, var(--cd), #0000),
+        radial-gradient(circle 1px at 24.5% 86.9%, var(--cd), #0000),
+        radial-gradient(circle 1px at 28.6% 89.8%, var(--cd), #0000),
+        radial-gradient(circle 1px at 82.9% 67.2%, var(--cd), #0000),
+        radial-gradient(circle 1px at 33.7% 28.3%, var(--cd), #0000),
+        radial-gradient(circle 1px at 20.2% 88.7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 4.6% 9.7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 94.1% 26.7%, var(--cd), #0000),
+        radial-gradient(circle 1px at 4.7% 50.6%, var(--cd), #0000),
+        radial-gradient(circle 1px at 23.2% 23.5%, var(--cd), #0000),
+        radial-gradient(circle 1px at 95.3% 83%, var(--cd), #0000),
+        radial-gradient(circle 1px at 43.5% 6.4%, var(--cd), #0000),
+        radial-gradient(circle 1px at 38.8% 50.6%, var(--cd), #0000),
+        radial-gradient(circle 1px at 28.3% 1.4%, var(--cd), #0000),
         linear-gradient(180deg, #0b2a57 0%, var(--rs-fondo) 45%, var(--rs-fondo-oscuro) 100%);
     animation: rs-ta 4.6s ease-in-out infinite alternate,
         rs-tb 6.1s ease-in-out infinite alternate,
         rs-tc 3.4s ease-in-out infinite alternate;
-    box-shadow: 1px 0 0 rgba(76, 195, 255, .28), 8px 0 28px rgba(4, 18, 42, .45);
+    box-shadow: 1px 0 0 rgb(76 195 255 / .28), 8px 0 28px rgb(4 18 42 / .45);
 }
 
 .app-main {
     position: relative;
     z-index: 1;
+    min-width: 0;
 }
 
 .app-header {
     z-index: 1030;
 }
 
-/* El contenido del menú va por encima de la lluvia */
+/* El contenido va por encima de la lluvia */
 .sidebar-brand,
 .sidebar-wrapper {
     position: relative;
@@ -194,35 +195,25 @@
 }
 
 /* ---------- Brillo suave que recorre el menú ---------- */
-
 .sidebar-wrapper {
-    background-color: transparent !important;
-    background-image: linear-gradient(115deg,
-            transparent 35%,
-            rgba(76, 195, 255, .08) 50%,
-            transparent 65%);
-    background-size: 300% 300%;
+    background: linear-gradient(115deg, transparent 35%, rgb(76 195 255 / .08) 50%, transparent 65%) 0 0 / 300% 300% !important;
     animation: rs-brillo 10s ease-in-out infinite alternate;
 }
 
 @keyframes rs-brillo {
     from {
-        background-position: 100% 0;
+        background-position: 100% 0
     }
 
     to {
-        background-position: 0 100%;
+        background-position: 0 100%
     }
 }
 
 /* ---------- Lluvia de meteoros ----------
-   Dos capas inclinadas 25° que se desplazan a distinta velocidad:
-   ::before = 3 estelas finas
-   ::after  = 2 estelas largas, con cabeza brillante, más lentas.
-   Así pasan pocos meteoros, con pausas entre uno y otro.
-   Cada capa se mueve exactamente un periodo (2000px / 3200px), por eso
-   el bucle no tiene saltos. Solo se anima transform (ligero para la GPU). */
-
+   Dos capas inclinadas 25°: ::before = 3 estelas finas,
+   ::after = 2 estelas largas con cabeza brillante.
+   Cada capa se desplaza exactamente un periodo (--d), sin saltos. */
 .app-sidebar::before,
 .app-sidebar::after {
     content: "";
@@ -234,217 +225,142 @@
     pointer-events: none;
     background-repeat: repeat-y;
     will-change: transform, opacity;
+    transform: rotate(25deg);
 }
 
 .app-sidebar::before {
+    --d: 2000px;
     top: -2060px;
     height: calc(100% + 4120px);
     background-image:
-        linear-gradient(to bottom, rgba(175, 225, 255, 0) 0, rgba(175, 225, 255, 0) 1896px, rgba(175, 225, 255, 0.84) 1996px, rgba(175, 225, 255, 0.84) 2000px),
-        linear-gradient(to bottom, rgba(175, 225, 255, 0) 0, rgba(175, 225, 255, 0) 1891px, rgba(175, 225, 255, 0.76) 1996px, rgba(175, 225, 255, 0.76) 2000px),
-        linear-gradient(to bottom, rgba(175, 225, 255, 0) 0, rgba(175, 225, 255, 0) 1912px, rgba(175, 225, 255, 0.81) 1996px, rgba(175, 225, 255, 0.81) 2000px);
+        linear-gradient(#afe1ff00 1896px, #afe1ffd6 1996px 2000px),
+        linear-gradient(#afe1ff00 1891px, #afe1ffc2 1996px 2000px),
+        linear-gradient(#afe1ff00 1912px, #afe1ffcf 1996px 2000px);
     background-size: 1px 2000px, 2px 2000px, 1px 2000px;
-    background-position: 360px 0px, 150px 680px, 470px 1340px;
-    transform: rotate(25deg) translateY(0);
-    animation: rs-lluvia-a 8s linear infinite,
-        rs-pulso 6s ease-in-out infinite alternate;
+    background-position: 360px 0, 150px 680px, 470px 1340px;
+    animation: rs-lluvia 8s linear infinite, rs-pulso 6s ease-in-out infinite alternate;
 }
 
 .app-sidebar::after {
+    --d: 3200px;
+    --cabeza: radial-gradient(circle 4px at 50% 3196px, #fff 0, rgb(190 235 255 / .85) 28%, #4cc3ff00 72%);
     top: -3260px;
     height: calc(100% + 6520px);
     background-image:
-        linear-gradient(to bottom, rgba(205, 240, 255, 0) 0, rgba(205, 240, 255, 0) 3014px, rgba(205, 240, 255, 0.9) 3196px, rgba(205, 240, 255, 0.9) 3200px),
-        radial-gradient(circle 4px at 50% 3196px, rgba(255, 255, 255, 1) 0, rgba(190, 235, 255, .85) 28%, rgba(76, 195, 255, 0) 72%),
-        linear-gradient(to bottom, rgba(205, 240, 255, 0) 0, rgba(205, 240, 255, 0) 3019px, rgba(205, 240, 255, 0.99) 3196px, rgba(205, 240, 255, 0.99) 3200px),
-        radial-gradient(circle 4px at 50% 3196px, rgba(255, 255, 255, 1) 0, rgba(190, 235, 255, .85) 28%, rgba(76, 195, 255, 0) 72%);
+        linear-gradient(#cdf0ff00 3014px, #cdf0ffe6 3196px 3200px),
+        var(--cabeza),
+        linear-gradient(#cdf0ff00 3019px, #cdf0fffc 3196px 3200px),
+        var(--cabeza);
     background-size: 2px 3200px, 8px 3200px, 3px 3200px, 8px 3200px;
-    background-position: 240px 0px, 237px 0px, 420px 1600px, 416.5px 1600px;
-    transform: rotate(25deg) translateY(0);
-    filter: drop-shadow(0 0 3px rgba(76, 195, 255, .65));
-    animation: rs-lluvia-b 13s linear infinite,
-        rs-pulso 9s ease-in-out infinite alternate-reverse;
+    background-position: 240px 0, 237px 0, 420px 1600px, 416.5px 1600px;
+    filter: drop-shadow(0 0 3px rgb(76 195 255 / .65));
+    animation: rs-lluvia 13s linear infinite, rs-pulso 9s ease-in-out infinite alternate-reverse;
 }
 
-@keyframes rs-lluvia-a {
-    from {
-        transform: rotate(25deg) translateY(0);
-    }
-
+@keyframes rs-lluvia {
     to {
-        transform: rotate(25deg) translateY(2000px);
+        transform: rotate(25deg) translateY(var(--d))
     }
 }
 
-@keyframes rs-lluvia-b {
-    from {
-        transform: rotate(25deg) translateY(0);
-    }
-
-    to {
-        transform: rotate(25deg) translateY(3200px);
-    }
-}
-
-/* la intensidad sube y baja, como ráfagas */
 @keyframes rs-pulso {
     from {
-        opacity: .55;
+        opacity: .55
     }
 
     to {
-        opacity: 1;
+        opacity: 1
     }
 }
 
 /* ---------- Encabezado con luz que viaja por la línea ---------- */
-
 .sidebar-brand {
     background: transparent !important;
-    border-bottom: 1px solid rgba(76, 195, 255, .14) !important;
+    border-bottom: 1px solid rgb(76 195 255 / .14) !important;
 }
 
 .sidebar-brand::after {
     content: "";
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -1px;
+    inset: auto 0 -1px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--rs-acento), transparent);
-    background-size: 45% 100%;
-    background-repeat: no-repeat;
+    background: linear-gradient(90deg, transparent, var(--rs-acento), transparent) 0 0 / 45% 100% no-repeat;
     animation: rs-linea 4.5s ease-in-out infinite alternate;
 }
 
 @keyframes rs-linea {
     from {
-        background-position: 0% 0;
+        background-position: 0 0
     }
 
     to {
-        background-position: 100% 0;
+        background-position: 100% 0
     }
 }
 
 /* ---------- Opciones del menú ---------- */
-
 .sidebar-menu .nav-link {
     margin: 2px 8px;
     border-radius: 10px;
-    color: rgba(214, 232, 255, .80);
-    transition: background .25s ease, color .25s ease,
-        transform .25s ease, box-shadow .25s ease;
+    color: rgb(214 232 255 / .8);
+    transition: background .25s, color .25s, transform .25s, box-shadow .25s;
 }
 
 .sidebar-menu .nav-link:hover {
     color: #fff;
-    background: rgba(76, 195, 255, .12);
+    background: rgb(76 195 255 / .12);
     transform: translateX(3px);
 }
 
 .sidebar-menu .nav-link.active {
     color: #fff !important;
-    background: linear-gradient(90deg,
-            rgba(47, 123, 255, .60),
-            rgba(76, 195, 255, .16)) !important;
-    box-shadow: inset 3px 0 0 var(--rs-acento),
-        0 0 18px rgba(47, 123, 255, .35);
+    background: linear-gradient(90deg, rgb(47 123 255 / .6), rgb(76 195 255 / .16)) !important;
+    box-shadow: inset 3px 0 0 var(--rs-acento), 0 0 18px rgb(47 123 255 / .35);
 }
 
 .sidebar-menu .nav-header {
-    color: rgba(76, 195, 255, .70);
+    color: rgb(76 195 255 / .7);
     font-size: .7rem;
     letter-spacing: .12em;
     text-transform: uppercase;
 }
 
-/* ---------- Celulares ---------- */
-
-/* ---------- RESPONSIVE CELULARES ---------- */
-
-/* ---------- MENÚ RESPONSIVE EN CELULARES ---------- */
+/* ---------- Celulares: sin animaciones pesadas, con scroll ---------- */
 @media (max-width: 991.98px) {
     .app-sidebar {
-        overflow: hidden;
-    }
-
-    .sidebar-wrapper {
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .app-main {
-        position: relative;
-        min-width: 0;
-    }
-}
-
-/* ---------- Si el usuario pide menos movimiento ---------- */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .app-sidebar::before,
-    .app-sidebar::after {
-        animation: none;
-        opacity: .5;
-    }
-
-    .app-sidebar {
-        animation: none;
-    }
-
-    .sidebar-wrapper,
-    .sidebar-brand::after {
-        animation: none;
-    }
-}
-
-/* ---------- OPTIMIZACIÓN DEL MENÚ MÓVIL ---------- */
-@media (max-width: 991.98px) {
-
-    /* Desactivar animaciones pesadas del fondo */
-    .app-sidebar {
-        overflow: hidden;
         animation: none !important;
     }
 
-    /* Desactivar la lluvia de meteoros en teléfonos */
     .app-sidebar::before,
     .app-sidebar::after {
-        animation: none !important;
-        filter: none !important;
-        opacity: 0;
+        display: none;
     }
 
-    /* Desactivar el brillo animado del contenido */
     .sidebar-wrapper,
     .sidebar-brand::after {
         animation: none !important;
     }
 
-    /* Mantener el desplazamiento del menú */
     .sidebar-wrapper {
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: hidden auto;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
     }
-
-    .app-main {
-        min-width: 0;
-    }
 }
 
-/* Respetar la preferencia de reducir movimiento */
+/* ---------- Menos movimiento ---------- */
 @media (prefers-reduced-motion: reduce) {
 
     *,
     *::before,
     *::after {
         animation: none !important;
-        transition-duration: 0.01ms !important;
+        transition-duration: .01ms !important;
         scroll-behavior: auto !important;
+    }
+
+    .app-sidebar::before,
+    .app-sidebar::after {
+        opacity: .5;
     }
 }
