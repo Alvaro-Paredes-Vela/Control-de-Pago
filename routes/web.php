@@ -23,47 +23,53 @@ use App\Http\Controllers\EstadoCuentaController;
 
 /*
 |--------------------------------------------------------------------------
-| AUTORIZACIONES
+| Permisos del sistema
 |--------------------------------------------------------------------------
 */
 
-// Solo el administrador puede gestionar las cuentas de usuarios.
+// Solo el administrador puede gestionar usuarios.
 Gate::define('administrar-usuarios', function ($user) {
     return $user->rol === 'administrador';
 });
 
+// Solo el administrador puede gestionar actividades y categorías.
+Gate::define('administrar-actividades', function ($user) {
+    return $user->rol === 'administrador';
+});
+
+// Administrador y tesorero pueden gestionar caja.
+Gate::define('administrar-caja', function ($user) {
+    return in_array($user->rol, ['administrador', 'tesorero']);
+});
+
 /*
 |--------------------------------------------------------------------------
-| RUTAS PÚBLICAS
+| Rutas públicas: login y registro
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('guest')->group(function () {
 
-    // Mostrar el formulario de inicio de sesión.
     Route::get('/login', [LoginController::class, 'showLogin'])
         ->name('login');
 
-    // Procesar el inicio de sesión.
     Route::post('/login', [LoginController::class, 'login']);
 
-    // Mostrar el formulario de registro.
     Route::get('/register', [RegisterController::class, 'showRegister'])
         ->name('register');
 
-    // Procesar el registro de usuarios.
     Route::post('/register', [RegisterController::class, 'register']);
 });
 
 /*
 |--------------------------------------------------------------------------
-| RUTAS PROTEGIDAS
+| Rutas para usuarios autenticados
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function () {
 
-    // Dashboard
+    // Panel principal.
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
@@ -73,89 +79,87 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | USUARIOS: SOLO ADMINISTRADOR
+    | Usuarios: solo administrador
     |--------------------------------------------------------------------------
     */
 
     Route::middleware('can:administrar-usuarios')->group(function () {
 
+        // Crear, listar, editar y eliminar usuarios.
         Route::resource('usuarios', UserController::class)
             ->parameters(['usuarios' => 'usuario']);
+
+        // Aprobar cuentas registradas.
+        Route::post(
+            'usuarios/{usuario}/aprobar',
+            [UserController::class, 'aprobar']
+        )->name('usuarios.aprobar');
     });
 
     /*
     |--------------------------------------------------------------------------
-    | ESTUDIANTES
+    | Categorías y actividades: solo administrador
     |--------------------------------------------------------------------------
     */
 
+    Route::middleware('can:administrar-actividades')->group(function () {
+
+        Route::resource('categorias', CategoriaActividadController::class)
+            ->parameters(['categorias' => 'categoria']);
+
+        Route::resource('actividades', ActividadController::class)
+            ->parameters(['actividades' => 'actividad']);
+
+        // Agregar campos personalizados a una actividad.
+        Route::post(
+            'actividades/{actividad}/campos',
+            [CampoActividadController::class, 'store']
+        )->name('actividades.campos.store');
+
+        // Eliminar campos personalizados.
+        Route::delete(
+            'actividades/{actividad}/campos/{campo}',
+            [CampoActividadController::class, 'destroy']
+        )->name('actividades.campos.destroy');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Caja: administrador y tesorero
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('can:administrar-caja')->group(function () {
+
+        Route::resource('metodos-pago', MetodoPagoController::class)
+            ->parameters(['metodos-pago' => 'metodo_pago']);
+
+        Route::resource('movimientos-caja', MovimientoCajaController::class)
+            ->parameters(['movimientos-caja' => 'movimientos_caja']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Módulos permitidos para los organizadores
+    |--------------------------------------------------------------------------
+    */
+
+    // Estudiantes.
     Route::resource('estudiantes', EstudianteController::class);
 
-    /*
-    |--------------------------------------------------------------------------
-    | CATEGORÍAS
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource('categorias', CategoriaActividadController::class)
-        ->parameters(['categorias' => 'categoria']);
-
-    /*
-    |--------------------------------------------------------------------------
-    | ACTIVIDADES
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource('actividades', ActividadController::class)
-        ->parameters(['actividades' => 'actividade']);
-
-    // Registrar campos personalizados de una actividad.
-    Route::post(
-        'actividades/{actividad}/campos',
-        [CampoActividadController::class, 'store']
-    )->name('actividades.campos.store');
-
-    // Eliminar campos personalizados de una actividad.
-    Route::delete(
-        'actividades/{actividad}/campos/{campo}',
-        [CampoActividadController::class, 'destroy']
-    )->name('actividades.campos.destroy');
-
-    /*
-    |--------------------------------------------------------------------------
-    | INSCRIPCIONES
-    |--------------------------------------------------------------------------
-    */
-
+    // Inscripciones.
     Route::resource('inscripciones', InscripcionController::class)
-        ->parameters(['inscripciones' => 'inscripcione']);
-
-    /*
-    |--------------------------------------------------------------------------
-    | FINANZAS
-    |--------------------------------------------------------------------------
-    */
-
-    // Métodos de pago.
-    Route::resource('metodos-pago', MetodoPagoController::class)
-        ->parameters(['metodos-pago' => 'metodo_pago']);
+        ->parameters(['inscripciones' => 'inscripcion']);
 
     // Pagos.
     Route::resource('pagos', PagoController::class);
 
-    // Movimientos de caja.
-    Route::resource('movimientos-caja', MovimientoCajaController::class)
-        ->parameters(['movimientos-caja' => 'movimientos_caja']);
-
     // Estado de cuentas.
-    Route::get('/estado-cuentas', [EstadoCuentaController::class, 'index'])
-        ->name('estado-cuentas.index');
+    Route::get(
+        '/estado-cuentas',
+        [EstadoCuentaController::class, 'index']
+    )->name('estado-cuentas.index');
 });
 
-/*
-|--------------------------------------------------------------------------
-| RUTA PRINCIPAL
-|--------------------------------------------------------------------------
-*/
-
+// Si ingresan a la página principal, los enviamos al login.
 Route::redirect('/', '/login');

@@ -10,77 +10,85 @@ use Illuminate\Support\Facades\Auth;
 
 class EstadoCuentaController extends Controller
 {
-    /**
-     * Mostrar el estado de cuentas de los estudiantes.
-     */
+    // Muestra el estado de cuenta de los estudiantes.
     public function index(Request $request)
     {
-        // Solo el administrador y el tesorero pueden consultar las cuentas.
+        // Permite consultar las cuentas a los tres roles.
         abort_unless(
-            in_array(Auth::user()?->rol, ['administrador', 'tesorero'], true),
+            in_array(Auth::user()?->rol, [
+                'administrador',
+                'tesorero',
+                'organizador',
+            ], true),
             403
         );
 
-        // Obtener el texto que escribió el usuario en el buscador.
+        // Obtenemos el texto ingresado en el buscador.
         $buscar = trim((string) $request->query('buscar', ''));
 
-        // Obtener la actividad seleccionada en el filtro.
+        // Obtenemos la actividad seleccionada.
         $actividadId = $request->query('actividad_id');
 
-        // Consultar las inscripciones y calcular los pagos confirmados.
+        // Consultamos inscripciones y calculamos los pagos confirmados.
         $inscripciones = Inscripcion::query()
             ->with([
                 'estudiante',
                 'actividad',
             ])
 
-            // Sumar únicamente los pagos que están confirmados.
+            // Sumamos únicamente los pagos confirmados.
             ->withSum([
                 'pagos as total_pagado' => function ($query) {
                     $query->where('estado', 'confirmado');
-                }
+                },
             ], 'monto')
 
-            // Mostrar únicamente inscripciones activas.
+            // Mostramos solamente las inscripciones activas.
             ->where('estado', 'inscrito')
 
-            // Buscar por registro universitario, nombres o apellidos.
+            // Buscamos por registro universitario, nombres o apellidos.
             ->when($buscar !== '', function ($query) use ($buscar) {
-                $query->whereHas('estudiante', function ($estudiante) use ($buscar) {
-                    $estudiante->where(function ($filtro) use ($buscar) {
-                        $filtro->where(
-                            'registro_universitario',
-                            'like',
-                            "%{$buscar}%"
-                        )
-                            ->orWhere('nombres', 'like', "%{$buscar}%")
-                            ->orWhere('apellidos', 'like', "%{$buscar}%");
-                    });
-                });
+                $query->whereHas(
+                    'estudiante',
+                    function ($estudiante) use ($buscar) {
+                        $estudiante->where(function ($filtro) use ($buscar) {
+                            $filtro->where(
+                                'registro_universitario',
+                                'like',
+                                "%{$buscar}%"
+                            )
+                                ->orWhere('nombres', 'like', "%{$buscar}%")
+                                ->orWhere('apellidos', 'like', "%{$buscar}%");
+                        });
+                    }
+                );
             })
 
-            // Filtrar por actividad si el usuario seleccionó una.
+            // Filtramos por actividad cuando se selecciona una.
             ->when(
                 $request->filled('actividad_id'),
                 function ($query) use ($actividadId) {
-                    $query->where('actividad_id', $actividadId);
+                    $query->where(
+                        'actividad_id',
+                        $actividadId
+                    );
                 }
             )
 
-            // Mostrar primero las inscripciones más recientes.
+            // Ordenamos desde las inscripciones más recientes.
             ->latest()
 
-            // Mostrar 15 cuentas por página y conservar los filtros.
+            // Mostramos 15 registros por página.
             ->paginate(15)
             ->withQueryString();
 
-        // Obtener las actividades para llenar el selector de la vista.
+        // Obtenemos las actividades para el filtro de la vista.
         $actividades = Actividad::orderBy('nombre')->get([
             'id',
             'nombre',
         ]);
 
-        // Enviar los datos a la vista estado-cuentas/index.blade.php.
+        // Enviamos los datos a la vista.
         return view('estado-cuentas.index', compact(
             'inscripciones',
             'actividades',

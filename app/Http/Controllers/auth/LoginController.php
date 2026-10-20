@@ -6,34 +6,53 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
+
 class LoginController extends Controller
 {
-    // Mostrar la pantalla de inicio de sesión.
+    // Muestra el formulario de inicio de sesión.
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Verificar las credenciales del usuario.
+    // Comprueba los datos y permite entrar solo a usuarios autorizados.
     public function login(Request $request)
     {
-        // Validar el correo y la contraseña recibidos.
+        // Validamos el correo y la contraseña ingresados.
         $credenciales = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        // Comprobar si las credenciales son correctas.
+        // Verificamos si el correo y la contraseña son correctos.
         if (Auth::attempt($credenciales)) {
 
-            // Regenerar la sesión por seguridad.
+            // Obtenemos los datos del usuario que inició sesión.
+            $usuario = Auth::user();
+
+            // Revisamos si el administrador aprobó su cuenta.
+            if (!$usuario->aprobado) {
+
+                // Cerramos la sesión si todavía no tiene autorización.
+                Auth::logout();
+
+                // Regresamos al formulario con un mensaje de espera.
+                return back()
+                    ->withErrors([
+                        'email' => 'Tu cuenta está pendiente de aprobación del administrador.',
+                    ])
+                    ->onlyInput('email');
+            }
+
+            // Renovamos la sesión por seguridad.
             $request->session()->regenerate();
 
-            // Entrar al panel principal.
+            // Enviamos al usuario autorizado al panel principal.
             return redirect()->intended(route('dashboard'));
         }
 
-        // Mostrar un error si los datos son incorrectos.
+        // Mostramos un mensaje si los datos son incorrectos.
         return back()
             ->withErrors([
                 'email' => 'Correo o contraseña incorrectos.',
@@ -41,19 +60,19 @@ class LoginController extends Controller
             ->onlyInput('email');
     }
 
-    // Cerrar la sesión del usuario.
+    // Cierra la sesión del usuario.
     public function logout(Request $request)
     {
-        // Cerrar la sesión autenticada.
+        // Cerramos la sesión actual.
         Auth::logout();
 
-        // Invalidar la sesión actual.
+        // Invalidamos la sesión anterior.
         $request->session()->invalidate();
 
-        // Generar un nuevo token de seguridad.
+        // Generamos un nuevo token de seguridad.
         $request->session()->regenerateToken();
 
-        // Regresar a la pantalla de inicio de sesión.
+        // Regresamos al inicio de sesión.
         return redirect()
             ->route('login')
             ->with('success', 'Sesión cerrada correctamente.');
