@@ -46,33 +46,33 @@ class ActividadController extends Controller
             ->with('success', 'Actividad registrada correctamente.');
     }
 
-    public function show(Actividad $actividade)
+    public function show(Actividad $actividad)
     {
-        $actividade->load([
+        $actividad->load([
             'categoria',
             'inscripciones.estudiante'
         ]);
 
         return view('actividades.show', [
-            'actividad' => $actividade
+            'actividad' => $actividad
         ]);
     }
 
 
-    public function edit(Actividad $actividade)
+    public function edit(Actividad $actividad)
     {
-        $actividade->load('campos');
+        $actividad->load('campos');
 
         $categorias = Categoria::orderBy('nombre')->get();
 
         return view('actividades.edit', [
-            'actividad' => $actividade,
+            'actividad' => $actividad,
             'categorias' => $categorias
         ]);
     }
 
 
-    public function update(Request $request, Actividad $actividade)
+    public function update(Request $request, Actividad $actividad)
     {
         $datos = $request->validate([
             'categoria_id' => 'required|exists:categorias,id',
@@ -86,7 +86,7 @@ class ActividadController extends Controller
             'estado' => 'required|in:planificada,inscripciones_abiertas,finalizada,cancelada',
         ]);
 
-        $inscritos = $actividade->inscripciones()
+        $inscritos = $actividad->inscripciones()
             ->where('estado', 'inscrito')
             ->count();
 
@@ -99,22 +99,22 @@ class ActividadController extends Controller
             ]);
         }
 
-        $actividade->update($datos);
+        $actividad->update($datos);
 
         return redirect()->route('actividades.index')
             ->with('success', 'Actividad actualizada correctamente.');
     }
 
-    public function destroy(Actividad $actividade)
+    public function destroy(Actividad $actividad)
     {
-        if ($actividade->inscripciones()->exists()) {
+        if ($actividad->inscripciones()->exists()) {
             return back()->with(
                 'error',
                 'No puedes eliminar una actividad con inscripciones.'
             );
         }
 
-        $actividade->delete();
+        $actividad->delete();
 
         return redirect()->route('actividades.index')
             ->with('success', 'Actividad eliminada correctamente.');

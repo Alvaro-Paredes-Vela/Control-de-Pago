@@ -3,7 +3,7 @@
 @section('title', 'Detalle de actividad')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}?v=4{{ '' }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-brand.css') }}?v=5">
 @endpush
 
 @section('content_header')
@@ -72,10 +72,14 @@
                         {{ ucfirst(str_replace('_', ' ', $actividad->estado)) }}
                     </p>
 
-                    <a href="{{ route('actividades.edit', $actividad) }}" class="btn btn-warning">
-                        <i class="bi bi-pencil-square me-1"></i>
-                        Editar actividad
-                    </a>
+                    {{-- Solo el administrador puede editar actividades --}}
+                    @can('administrar-actividades')
+                        <a href="{{ route('actividades.edit', ['actividad' => $actividad->getRouteKey()]) }}"
+                            class="btn btn-warning">
+                            <i class="bi bi-pencil-square me-1"></i>
+                            Editar actividad
+                        </a>
+                    @endcan
 
                 </div>
             </div>
