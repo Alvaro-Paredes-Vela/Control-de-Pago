@@ -209,7 +209,7 @@ class InscripcionController extends Controller
     }
 
     // MOSTRAR DETALLE
-    public function show(Inscripcion $inscripcione)
+    public function show(Inscripcion $inscripcion)
     {
         $esFinanciero = in_array(Auth::user()?->rol, [
             'administrador',
@@ -227,36 +227,36 @@ class InscripcionController extends Controller
             $relaciones[] = 'pagos';
         }
 
-        $inscripcione->load($relaciones);
+        $inscripcion->load($relaciones);
 
         return view('inscripciones.show', [
-            'inscripcion' => $inscripcione,
+            'inscripcion' => $inscripcion,
             'esFinanciero' => $esFinanciero
         ]);
     }
 
     // FORMULARIO DE EDICIÓN
-    public function edit(Inscripcion $inscripcione)
+    public function edit(Inscripcion $inscripcion)
     {
-        $inscripcione->load([
+        $inscripcion->load([
             'estudiante',
             'actividad',
             'respuestas.campo'
         ]);
 
         return view('inscripciones.edit', [
-            'inscripcion' => $inscripcione
+            'inscripcion' => $inscripcion
         ]);
     }
 
     // ACTUALIZAR INSCRIPCIÓN
-    public function update(Request $request, Inscripcion $inscripcione)
+    public function update(Request $request, Inscripcion $inscripcion)
     {
         $datos = $request->validate([
             'observaciones' => 'nullable|string',
         ]);
 
-        $inscripcione->update($datos);
+        $inscripcion->update($datos);
 
         return redirect()
             ->route('inscripciones.index')
@@ -264,19 +264,19 @@ class InscripcionController extends Controller
     }
 
     // CANCELAR INSCRIPCIÓN
-    public function destroy(Inscripcion $inscripcione)
+    public function destroy(Inscripcion $inscripcion)
     {
-        DB::transaction(function () use ($inscripcione) {
+        DB::transaction(function () use ($inscripcion) {
 
-            $inscripcione = Inscripcion::whereKey(
-                $inscripcione->id
+            $inscripcion = Inscripcion::whereKey(
+                $inscripcion->id
             )
                 ->lockForUpdate()
                 ->firstOrFail();
 
             // Impedir cancelar inscripciones con pagos confirmados
             if (
-                $inscripcione->pagos()
+                $inscripcion->pagos()
                 ->where('estado', 'confirmado')
                 ->exists()
             ) {
@@ -286,7 +286,7 @@ class InscripcionController extends Controller
                 ]);
             }
 
-            $inscripcione->update([
+            $inscripcion->update([
                 'estado' => 'cancelado'
             ]);
         });

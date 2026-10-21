@@ -152,10 +152,14 @@
 
                     @endif
 
-                    <a href="{{ route('inscripciones.edit', $inscripcion) }}" class="btn btn-warning mt-2">
-                        <i class="bi bi-pencil-square me-1"></i>
-                        Editar inscripción
-                    </a>
+                    {{-- Enlace para editar la inscripción --}}
+                    @can('modificar-registros')
+                        <a href="{{ route('inscripciones.edit', ['inscripcion' => $inscripcion->id]) }}"
+                            class="btn btn-warning mt-2">
+                            <i class="bi bi-pencil-square me-1"></i>
+                            Editar inscripción
+                        </a>
+                    @endcan
 
                 </div>
             </div>
