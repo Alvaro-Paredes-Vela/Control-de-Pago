@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -27,9 +29,15 @@ class UserController extends Controller
     {
         $this->verificarAdministrador();
 
-        $usuarios = User::orderBy('id', 'desc')->paginate(10);
+        // Los pendientes (aprobado = false) aparecen primero.
+        $usuarios = User::orderBy('aprobado')
+            ->orderByDesc('id')
+            ->paginate(10);
 
-        return view('usuarios.index', compact('usuarios'));
+        // Total de cuentas esperando aprobación (para el aviso de la vista).
+        $pendientes = User::where('aprobado', false)->count();
+
+        return view('usuarios.index', compact('usuarios', 'pendientes'));
     }
 
     public function create()
@@ -54,6 +62,7 @@ class UserController extends Controller
             'email' => $datos['email'],
             'password' => Hash::make($datos['password']),
             'rol' => 'organizador',
+            'aprobado' => true,
         ]);
 
         return redirect()->route('usuarios.index')
@@ -110,21 +119,114 @@ class UserController extends Controller
             ->with('success', 'Usuario actualizado correctamente.');
     }
 
-    public function destroy(User $usuario)
+    // Muestra a quién se va a eliminar y pide confirmación.
+    public function confirmarEliminar(User $usuario)
     {
         $this->verificarAdministrador();
 
         if ($usuario->id === Auth::id()) {
-            return back()->with(
+            return redirect()->route('usuarios.index')
+                ->with('error', 'No puedes eliminar tu propia cuenta.');
+        }
+
+        return view('usuarios.eliminar', compact('usuario'));
+    }
+
+    // Elimina la cuenta por completo (sin vuelta atrás).
+    // Elimina la cuenta por completo (sin vuelta atrás).
+    public function destroy(Request $request, User $usuario)
+    {
+        $this->verificarAdministrador();
+
+        if ($usuario->id === Auth::id()) {
+            return redirect()->route('usuarios.index')
+                ->with('error', 'No puedes eliminar tu propia cuenta.');
+        }
+
+        // El administrador debe escribir el correo exacto para confirmar.
+        if ($request->input('correo_confirmacion') !== $usuario->email) {
+            return back()->withErrors([
+                'correo_confirmacion' => 'El correo escrito no coincide con el del usuario.',
+            ]);
+        }
+
+        $nombre = $usuario->name;
+
+        try {
+            $usuario->delete();
+        } catch (QueryException $e) {
+            return redirect()->route('usuarios.index')->with(
                 'error',
-                'No puedes eliminar tu propia cuenta.'
+                "No se pudo eliminar a {$nombre}: tiene registros asociados en el sistema."
             );
         }
 
-        // Conservamos cuentas utilizadas en registros financieros.
-        return back()->with(
-            'error',
-            'Por seguridad, desactiva usuarios en lugar de eliminarlos.'
+        // Guardamos constancia de la eliminación.
+        $this->registrarEliminado($usuario, Auth::user());
+
+        return redirect()->route('usuarios.index')
+            ->with('success', "La cuenta de {$nombre} fue eliminada por completo.");
+    }
+
+    // Lista de cuentas eliminadas (más recientes primero).
+    public function eliminados()
+    {
+        $this->verificarAdministrador();
+
+        $eliminados = $this->leerEliminados();
+
+        return view('usuarios.eliminados', compact('eliminados'));
+    }
+
+    // Lee el historial desde el archivo JSON.
+    private function leerEliminados()
+    {
+        $archivo = 'usuarios_eliminados.json';
+
+        if (! Storage::disk('local')->exists($archivo)) {
+            return collect();
+        }
+
+        $datos = json_decode(Storage::disk('local')->get($archivo), true);
+
+        return collect(is_array($datos) ? $datos : [])
+            ->sortByDesc('eliminado_en')
+            ->values();
+    }
+
+    // Agrega un registro al historial (sin guardar la contraseña).
+    private function registrarEliminado(User $usuario, User $admin): void
+    {
+        $archivo = 'usuarios_eliminados.json';
+
+        $historial = Storage::disk('local')->exists($archivo)
+            ? (json_decode(Storage::disk('local')->get($archivo), true) ?: [])
+            : [];
+
+        $historial[] = [
+            'id'            => $usuario->id,
+            'name'          => $usuario->name,
+            'email'         => $usuario->email,
+            'rol'           => $usuario->rol,
+            'aprobado'      => (bool) $usuario->aprobado,
+            'registrado_en' => $usuario->created_at?->toDateTimeString(),
+            'eliminado_en'  => now()->toDateTimeString(),
+            'eliminado_por' => $admin->name,
+        ];
+
+        Storage::disk('local')->put(
+            $archivo,
+            json_encode($historial, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
         );
+    }
+
+    // Aprueba una cuenta registrada para que pueda iniciar sesión.
+    public function aprobar(User $usuario)
+    {
+        $this->verificarAdministrador();
+
+        $usuario->update(['aprobado' => true]);
+
+        return back()->with('success', "La cuenta de {$usuario->name} fue aprobada.");
     }
 }

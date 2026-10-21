@@ -30,4 +30,26 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function adminlte_desc()
+    {
+        return $this->esAdministrador() ? $this->name : 'Organizador';
+    }
+
+    public function esAdministrador(): bool
+    {
+        // Elige UNA según tu estructura:
+
+        // a) Columna "rol" en la tabla users
+        return $this->rol === 'administrador';
+
+        // b) Spatie Laravel Permission
+        // return $this->hasRole('administrador');
+
+        // c) Relación con modelo Rol
+        // return $this->rol?->nombre === 'administrador';
+
+        // d) Usando el Gate que ya usas en el menú
+        // return $this->can('administrar-usuarios');
+    }
 }

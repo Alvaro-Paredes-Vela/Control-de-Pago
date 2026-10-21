@@ -20,7 +20,7 @@ use App\Http\Controllers\PagoController;
 use App\Http\Controllers\MovimientoCajaController;
 use App\Http\Controllers\CampoActividadController;
 use App\Http\Controllers\EstadoCuentaController;
-
+use App\Http\Controllers\NotificacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,21 +87,39 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Usuarios: solo administrador
+    | Usuarios y notificaciones: solo administrador
     |--------------------------------------------------------------------------
     */
 
     Route::middleware('can:administrar-usuarios')->group(function () {
 
-        // Crear, listar, editar y eliminar usuarios.
-        Route::resource('usuarios', UserController::class)
-            ->parameters(['usuarios' => 'usuario']);
+        // Cuentas pendientes para la campana de la barra superior.
+        Route::get(
+            'notificaciones/pendientes',
+            [NotificacionController::class, 'pendientes']
+        )->name('notificaciones.pendientes');
 
         // Aprobar cuentas registradas.
-        Route::post(
+        Route::patch(
             'usuarios/{usuario}/aprobar',
             [UserController::class, 'aprobar']
         )->name('usuarios.aprobar');
+
+        // Pantalla de confirmación antes de eliminar.
+        Route::get(
+            'usuarios/{usuario}/eliminar',
+            [UserController::class, 'confirmarEliminar']
+        )->name('usuarios.eliminar');
+
+        // Historial de cuentas eliminadas.
+        Route::get(
+            'usuarios-eliminados',
+            [UserController::class, 'eliminados']
+        )->name('usuarios.eliminados');
+
+        // Crear, listar, editar y eliminar usuarios.
+        Route::resource('usuarios', UserController::class)
+            ->parameters(['usuarios' => 'usuario']);
     });
 
     /*

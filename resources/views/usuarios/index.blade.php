@@ -15,10 +15,17 @@
             </p>
         </div>
 
-        <a href="{{ route('usuarios.create') }}" class="btn btn-primary">
-            <i class="bi bi-person-plus me-1"></i>
-            Nuevo usuario
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('usuarios.eliminados') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-person-x me-1"></i>
+                Eliminados
+            </a>
+
+            <a href="{{ route('usuarios.create') }}" class="btn btn-primary">
+                <i class="bi bi-person-plus me-1"></i>
+                Nuevo usuario
+            </a>
+        </div>
     </div>
 @stop
 
@@ -30,6 +37,15 @@
 
     @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
+    {{-- Aviso de cuentas pendientes de aprobación --}}
+    @if (($pendientes ?? 0) > 0)
+        <div class="alert alert-warning d-flex align-items-center">
+            <i class="bi bi-hourglass-split me-2"></i>
+            Hay <strong class="mx-1">{{ $pendientes }}</strong>
+            {{ $pendientes === 1 ? 'cuenta pendiente' : 'cuentas pendientes' }} de aprobación.
+        </div>
     @endif
 
     <div class="card border-0 shadow-sm">
@@ -49,6 +65,7 @@
                             <th>Nombre</th>
                             <th>Correo electrónico</th>
                             <th>Rol</th>
+                            <th>Estado</th>
                             <th>Fecha de registro</th>
                             <th class="text-center">Acciones</th>
                         </tr>
@@ -87,11 +104,30 @@
                                 </td>
 
                                 <td>
+                                    @if ($usuario->aprobado)
+                                        <span class="badge text-bg-success">Aprobado</span>
+                                    @else
+                                        <span class="badge text-bg-warning">Pendiente</span>
+                                    @endif
+                                </td>
+
+                                <td>
                                     {{ $usuario->created_at?->format('d/m/Y') ?? '—' }}
                                 </td>
 
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
+                                        @unless ($usuario->aprobado)
+                                            <form action="{{ route('usuarios.aprobar', $usuario) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <button type="submit" class="btn btn-success btn-sm" title="Aprobar cuenta">
+                                                    <i class="bi bi-check-lg"></i> Aprobar
+                                                </button>
+                                            </form>
+                                        @endunless
+
                                         <a href="{{ route('usuarios.show', $usuario) }}"
                                             class="btn btn-info btn-sm text-white" title="Ver">
                                             <i class="bi bi-eye"></i>
@@ -103,23 +139,17 @@
                                         </a>
 
                                         @if ($usuario->id !== Auth::id())
-                                            <form action="{{ route('usuarios.destroy', $usuario) }}" method="POST"
-                                                onsubmit="return confirm('¿Solicitar eliminación del usuario?')">
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                    title="Administrar eliminación">
-                                                    <i class="bi bi-person-x"></i>
-                                                </button>
-                                            </form>
+                                            <a href="{{ route('usuarios.eliminar', $usuario) }}"
+                                                class="btn btn-outline-danger btn-sm" title="Eliminar usuario">
+                                                <i class="bi bi-person-x"></i>
+                                            </a>
                                         @endif
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
+                                <td colspan="7" class="text-center text-muted py-4">
                                     No se encontraron usuarios.
                                 </td>
                             </tr>

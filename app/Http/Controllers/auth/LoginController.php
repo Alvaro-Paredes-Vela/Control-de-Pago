@@ -28,17 +28,17 @@ class LoginController extends Controller
         // Verificamos si el correo y la contraseña son correctos.
         if (Auth::attempt($credenciales)) {
 
-            // Obtenemos los datos del usuario que inició sesión.
-            $usuario = Auth::user();
-
             // Revisamos si el administrador aprobó su cuenta.
-            if (!$usuario->aprobado) {
+            if (! Auth::user()->aprobado) {
 
-                // Cerramos la sesión si todavía no tiene autorización.
+                // Cerramos la sesión y la descartamos por completo.
                 Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
 
                 // Regresamos al formulario con un mensaje de espera.
-                return back()
+                return redirect()
+                    ->route('login')
                     ->withErrors([
                         'email' => 'Tu cuenta está pendiente de aprobación del administrador.',
                     ])
