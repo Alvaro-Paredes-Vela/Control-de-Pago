@@ -806,10 +806,10 @@ return [
         ],
 
         // ───────────── BUSCADOR LATERAL ─────────────
-        [
+        /*[
             'type' => 'sidebar-menu-search',
             'text' => 'Buscar en el menú…',
-        ],
+        ],*/
 
         // ───────────── PRINCIPAL ─────────────
         ['header' => 'PANEL'],
