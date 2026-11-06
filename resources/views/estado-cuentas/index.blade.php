@@ -191,6 +191,29 @@
             font-size: 2.6rem;
             opacity: .45;
         }
+
+        /* ---------- Paginación ---------- */
+        .pagination-wrap nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .pagination-wrap .pagination {
+            margin-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        /* La vista bootstrap-5 de Laravel trae su propio texto "Showing ... results"
+               en inglés; lo ocultamos porque mostramos el nuestro en español. */
+        .pagination-wrap nav p.small {
+            display: none;
+        }
+
+        /* Evita SVG gigantes si alguna vista vuelve a usar la paginación Tailwind */
+        .pagination-wrap svg {
+            width: 1rem;
+            height: 1rem;
+        }
     </style>
 @endpush
 
@@ -221,14 +244,15 @@
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show">
             <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" data-dismiss="alert" aria-label="Cerrar"></button>
         </div>
     @endif
 
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show">
             <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" data-dismiss="alert"
+                aria-label="Cerrar"></button>
         </div>
     @endif
 
@@ -338,7 +362,7 @@
                 </h5>
 
                 <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis px-3 py-2">
-                    {{ $inscripciones->total() }} cuentas
+                    {{ number_format($inscripciones->total(), 0, ',', '.') }} cuentas
                 </span>
             </div>
 
@@ -466,13 +490,15 @@
             </div>
 
             {{-- Paginación que conserva los filtros --}}
-            <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
-                <small class="text-muted mb-2">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4 pagination-wrap">
+                <small class="text-muted">
                     Mostrando {{ $inscripciones->firstItem() ?? 0 }}–{{ $inscripciones->lastItem() ?? 0 }}
-                    de {{ $inscripciones->total() }}
+                    de {{ number_format($inscripciones->total(), 0, ',', '.') }}
                 </small>
 
-                {{ $inscripciones->withQueryString()->links() }}
+                @if ($inscripciones->hasPages())
+                    {{ $inscripciones->withQueryString()->onEachSide(1)->links('pagination::bootstrap-5') }}
+                @endif
             </div>
 
         </div>
