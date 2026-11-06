@@ -37,7 +37,7 @@ return [
     |
     */
 
-    'title' => 'Reprogramando Sistemas',
+    'title' => 'Repro. Sistemas',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -940,6 +940,18 @@ return [
             'icon_color' => 'success',
             'active' => ['metodos-pago*'],
         ],
+
+        // ───────────── REPORTES ─────────────
+        ['header' => 'REPORTES'],
+
+        [
+            'text' => 'Exportar datos',
+            'route' => 'reportes.estudiantes-actividad',
+            'icon' => 'bi bi-file-earmark-bar-graph-fill',
+            'icon_color' => 'info',
+            'active' => ['reportes*'],
+        ],
+
 
         // ───────────── SISTEMA ─────────────
         ['header' => 'SISTEMA'],

@@ -21,6 +21,7 @@ use App\Http\Controllers\MovimientoCajaController;
 use App\Http\Controllers\CampoActividadController;
 use App\Http\Controllers\EstadoCuentaController;
 use App\Http\Controllers\NotificacionController;
+use App\Http\Controllers\ReporteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -215,6 +216,14 @@ Route::middleware('auth')->group(function () {
         '/estado-cuentas',
         [EstadoCuentaController::class, 'index']
     )->name('estado-cuentas.index');
+});
+
+Route::prefix('reportes')->name('reportes.')->group(function () {
+    Route::get('estudiantes-actividad', [ReporteController::class, 'estudiantesActividad'])
+        ->name('estudiantes-actividad');
+
+    Route::get('estudiantes-actividad/exportar', [ReporteController::class, 'exportarEstudiantesActividad'])
+        ->name('estudiantes-actividad.exportar');
 });
 
 // Si ingresan a la página principal, los enviamos al login.
