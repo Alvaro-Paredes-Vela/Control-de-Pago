@@ -11,7 +11,7 @@ return new class extends Migration
         // Agrega el campo de autorización.
         // Los usuarios que ya existen seguirán habilitados.
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('aprobado')->default(true);
+            $table->boolean('aprobado');
         });
     }
 
