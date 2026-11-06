@@ -29,7 +29,7 @@ class LoginController extends Controller
         if (Auth::attempt($credenciales)) {
 
             // Revisamos si el administrador aprobó su cuenta.
-            if (! Auth::user()->aprobado) {
+            if (!Auth::user()->aprobado) {
 
                 // Cerramos la sesión y la descartamos por completo.
                 Auth::logout();
